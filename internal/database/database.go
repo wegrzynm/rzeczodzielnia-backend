@@ -23,7 +23,7 @@ type Service interface {
 }
 
 type service struct {
-	db *gorm.DB
+	Db *gorm.DB
 }
 
 var (
@@ -32,14 +32,17 @@ var (
 	username   = os.Getenv("DB_USERNAME")
 	port       = os.Getenv("DB_PORT")
 	host       = os.Getenv("DB_HOST")
-	dbInstance *service
+	DbInstance *service
 )
 
 func New() Service {
-	godotenv.Load()
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 	// Reuse Connection
-	if dbInstance != nil {
-		return dbInstance
+	if DbInstance != nil {
+		return DbInstance
 	}
 
 	// Opening a driver typically will not attempt to connect to the database.
@@ -49,10 +52,10 @@ func New() Service {
 		log.Fatal(err)
 	}
 
-	dbInstance = &service{
-		db: db,
+	DbInstance = &service{
+		Db: db,
 	}
-	return dbInstance
+	return DbInstance
 }
 
 // Health checks the health of the database connection by pinging the database.
@@ -61,7 +64,7 @@ func (s *service) Health() map[string]string {
 	stats := make(map[string]string)
 
 	// Ping the database
-	mysqlDb, err := s.db.DB()
+	mysqlDb, err := s.Db.DB()
 	if err != nil {
 		stats["status"] = "down"
 		stats["error"] = fmt.Sprintf("db down: %v", err)
@@ -108,7 +111,7 @@ func (s *service) Health() map[string]string {
 // If an error occurs while closing the connection, it returns the error.
 func (s *service) Close() error {
 	log.Printf("Disconnected from database: %s", dbname)
-	mysqlDb, err := s.db.DB()
+	mysqlDb, err := s.Db.DB()
 	if err != nil {
 		return err
 	}
