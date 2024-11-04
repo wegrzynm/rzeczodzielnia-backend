@@ -8,25 +8,27 @@ import (
 
 type User struct {
 	gorm.Model
-	Email    string `gorm:"unique" json:"email"`
-	Password string `json:"password"`
-	Name     string `json:"name"`
-	Lastname string `json:"lastname"`
+	Email     string  `gorm:"unique" json:"email"`
+	Password  string  `json:"password"`
+	Name      string  `json:"name"`
+	Lastname  string  `json:"lastname"`
+	AddressId uint    `json:"addressId"`
+	Address   Address `json:"address"`
 }
 
 func init() {
 	database.New()
-	err := database.DbInstance.Db.AutoMigrate(&User{})
+	err := database.DbInstance.Db.AutoMigrate(&Address{}, &User{})
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 }
 
-func GetAllCompanies() []User {
-	var company []User
-	database.DbInstance.Db.Find(&company)
-	return company
+func GetAllUsers() []User {
+	var users []User
+	database.DbInstance.Db.Find(&users)
+	return users
 }
 
 func GetUserById(Id uint) *User {
