@@ -36,7 +36,7 @@ func (s *Server) LoginHandler(w http.ResponseWriter, r *http.Request) {
 		handleError(w, http.StatusUnauthorized, "Invalid password")
 		return
 	}
-	token, err := utils.CreateToken(user.ID, user.Email)
+	token, err := utils.CreateToken(user.ID, user.Email, user.Role)
 	if err != nil {
 		handleError(w, http.StatusInternalServerError, "Error creating token")
 		return
@@ -63,11 +63,14 @@ func (s *Server) RegisterHandler(w http.ResponseWriter, r *http.Request) {
 		handleError(w, http.StatusBadRequest, "Problems with password encryption")
 		return
 	}
+
 	newUser := models.User{
+		Role:     0,
 		Name:     requestBody.Name,
 		Lastname: requestBody.Lastname,
 		Email:    requestBody.Email,
 		Password: password,
+		Address:  models.Address{Country: "Default"},
 	}
 	utils.AddOrUpdateObject(newUser, false)
 	msg := make(map[string]string)

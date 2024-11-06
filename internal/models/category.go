@@ -32,3 +32,9 @@ func GetCategoryId(Id uint) *Category {
 	database.DbInstance.Db.Where("Id=?", Id).Find(&category)
 	return &category
 }
+
+func GetCategoryByName(name string) *Category {
+	var category Category
+	database.DbInstance.Db.Where("name=?", name).Find(&category)
+	return &category
+}

@@ -10,6 +10,13 @@ import (
 	"time"
 )
 
+type TokenClaims struct {
+	Id    uint
+	Email string
+	Role  uint
+	Exp   time.Time
+}
+
 var secretKey = []byte(os.Getenv("SECRET_KEY"))
 
 func init() {
@@ -19,11 +26,12 @@ func init() {
 	}
 }
 
-func CreateToken(id uint, username string) (string, error) {
+func CreateToken(id uint, username string, role uint) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
 			"id":    id,
 			"email": username,
+			"role":  role,
 			"exp":   time.Now().Add(time.Hour * 24).Unix(),
 		})
 
@@ -35,20 +43,30 @@ func CreateToken(id uint, username string) (string, error) {
 	return tokenString, nil
 }
 
-func VerifyToken(tokenString string) error {
+func VerifyToken(tokenString string) (error, *TokenClaims) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return secretKey, nil
 	})
 
 	if err != nil {
-		return err
+		return err, nil
 	}
 
 	if !token.Valid {
-		return fmt.Errorf("invalid token")
+		return fmt.Errorf("invalid token"), nil
 	}
 
-	return nil
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return fmt.Errorf("invalid token claims"), nil
+	}
+	tokenClaims := TokenClaims{
+		Id:    uint(claims["id"].(float64)),
+		Email: claims["email"].(string),
+		Role:  uint(claims["role"].(float64)),
+		Exp:   time.Unix(int64(claims["exp"].(float64)), 0),
+	}
+	return nil, &tokenClaims
 }
 
 func EncryptPassword(password string) (string, error) {

@@ -17,6 +17,7 @@ type Product struct {
 	Images      []Image  `json:"images" gorm:"foreignKey:ProductID"`
 	UserID      uint     `json:"userID"`
 	User        User     `json:"user"`
+	IsActive    bool     `json:"isActive"`
 }
 
 func init() {
@@ -28,26 +29,36 @@ func init() {
 	}
 }
 
-func GetAllProducts() []Product {
+func GetAllProducts(isActive bool) []Product {
 	var products []Product
-	database.DbInstance.Db.Preload("Category").Preload("Images").Find(&products)
+	database.DbInstance.Db.Preload("Category").Preload("Images").
+		Where("is_active=?", isActive).
+		Find(&products)
 	return products
 }
 
-func GetProductsByCategory(category Category) []Product {
+func GetProductsByCategory(category uint) []Product {
 	var products []Product
-	database.DbInstance.Db.Preload("Category").Preload("Images").Where("category_id=?", category.ID).Find(&products)
+	database.DbInstance.Db.Preload("Category").Preload("Images").
+		Where("category_id=?", category).Where("is_active=?", true).
+		Find(&products)
 	return products
 }
 
-func GetProductsByUser(user User) []Product {
+func GetProductsByUser(userId uint) []Product {
 	var products []Product
-	database.DbInstance.Db.Preload("Category").Preload("Images").Where("user_id=?", user.ID).Find(&products)
+	database.DbInstance.Db.Preload("Category").Preload("Images").
+		Where("user_id=?", userId).Where("is_active=?", true).
+		Find(&products)
 	return products
 }
 
 func GetProductById(Id uint) *Product {
 	var product Product
-	database.DbInstance.Db.Preload("Category").Preload("Images").Where("Id=?", Id).Find(&product)
+	database.DbInstance.Db.Preload("Category").Preload("Images").Where("Id=?", Id).First(&product)
 	return &product
+}
+
+func DeleteProductById(product Product) {
+	database.DbInstance.Db.Delete(product)
 }

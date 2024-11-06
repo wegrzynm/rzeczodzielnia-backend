@@ -14,6 +14,7 @@ type User struct {
 	Lastname  string  `json:"lastname"`
 	AddressId uint    `json:"addressId"`
 	Address   Address `json:"address"`
+	Role      uint    `json:"role"` // 0 - user, 1 - admin
 }
 
 func init() {
@@ -27,7 +28,7 @@ func init() {
 
 func GetAllUsers() []User {
 	var users []User
-	database.DbInstance.Db.Find(&users)
+	database.DbInstance.Db.Where("role=?", 0).Find(&users)
 	return users
 }
 

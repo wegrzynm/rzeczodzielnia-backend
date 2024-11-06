@@ -14,7 +14,7 @@ type ServiceType struct {
 
 func init() {
 	database.New()
-	err := database.DbInstance.Db.AutoMigrate(&User{})
+	err := database.DbInstance.Db.AutoMigrate(&ServiceType{})
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -26,8 +26,15 @@ func GetAllServiceTypes() []ServiceType {
 	database.DbInstance.Db.Find(&serviceTypes)
 	return serviceTypes
 }
+
 func GetServiceTypeById(Id uint) *ServiceType {
 	var serviceType ServiceType
 	database.DbInstance.Db.Where("Id=?", Id).Find(&serviceType)
+	return &serviceType
+}
+
+func GetServiceTypeByName(name string) *ServiceType {
+	var serviceType ServiceType
+	database.DbInstance.Db.Where("name=?", name).Find(&serviceType)
 	return &serviceType
 }
