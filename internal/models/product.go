@@ -10,7 +10,7 @@ type Product struct {
 	gorm.Model
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
-	Price       int      `json:"price"`
+	Price       float64  `json:"price"`
 	Quantity    int      `json:"quantity"`
 	CategoryID  uint     `json:"categoryID"`
 	Category    Category `json:"category"`
@@ -60,5 +60,5 @@ func GetProductById(Id uint) *Product {
 }
 
 func DeleteProductById(product Product) {
-	database.DbInstance.Db.Delete(product)
+	database.DbInstance.Db.Delete(&product)
 }

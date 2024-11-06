@@ -62,7 +62,12 @@ func (s *Server) CreateProductHandler(w http.ResponseWriter, r *http.Request) {
 		handleError(w, http.StatusBadRequest, fmt.Sprintf("Error decoding request body: %v", err))
 		return
 	}
+	if models.GetCategoryId(requestBody.CategoryID).ID == 0 {
+		handleError(w, http.StatusBadRequest, "Category not found")
+		return
+	}
 	requestBody.UserID = usr.Id
+	requestBody.IsActive = true
 
 	utils.AddOrUpdateObject(&requestBody, false)
 	sendJSONResponse(w, http.StatusCreated, requestBody)
@@ -125,7 +130,6 @@ func (s *Server) DeleteProductHandler(w http.ResponseWriter, r *http.Request, pa
 	}
 
 	product.IsActive = false
-	utils.AddOrUpdateObject(&product, true)
 	models.DeleteProductById(*product)
 	msg := map[string]string{"message": "Product deleted successfully"}
 	sendJSONResponse(w, http.StatusNoContent, msg)
