@@ -12,28 +12,32 @@ import (
 
 func (s *Server) RegisterRoutes() http.Handler {
 	r := httprouter.New()
+	routeVersion := "/v1"
 	//Login and Register routes
-	r.HandlerFunc(http.MethodPost, "/login", s.LoginHandler)
-	r.HandlerFunc(http.MethodPost, "/register", s.RegisterHandler)
+	r.HandlerFunc(http.MethodPost, routeVersion+"/login", s.LoginHandler)
+	r.HandlerFunc(http.MethodPost, routeVersion+"/register", s.RegisterHandler)
 
 	//Category routes
-	r.HandlerFunc(http.MethodGet, "/categories", s.GetCategoriesHandler)
-	r.HandlerFunc(http.MethodPost, "/category/create", s.CreateCategoryHandler)
-	r.Handle(http.MethodPut, "/category/:id/update", s.UpdateCategoryHandler)
+	r.HandlerFunc(http.MethodGet, routeVersion+"/categories", s.GetCategoriesHandler)
+	r.HandlerFunc(http.MethodPost, routeVersion+"/category/create", s.CreateCategoryHandler)
+	r.Handle(http.MethodPut, routeVersion+"/category/:id/update", s.UpdateCategoryHandler)
 
 	//Service routes
-	r.HandlerFunc(http.MethodGet, "/service-types", s.GetServiceTypesHandler)
-	r.HandlerFunc(http.MethodPost, "/service-type/create", s.CreateServiceTypeHandler)
-	r.Handle(http.MethodPut, "/service-type/:id/update", s.UpdateServiceTypeHandler)
+	r.HandlerFunc(http.MethodGet, routeVersion+"/service-types", s.GetServiceTypesHandler)
+	r.HandlerFunc(http.MethodPost, routeVersion+"/service-type/create", s.CreateServiceTypeHandler)
+	r.Handle(http.MethodPut, routeVersion+"/service-type/:id/update", s.UpdateServiceTypeHandler)
 
 	//Product routes
-	r.HandlerFunc(http.MethodGet, "/products", s.GetProductsHandler)
-	r.Handle(http.MethodGet, "/products/category/:id", s.GetProductsByCategoryHandler)
-	r.Handle(http.MethodGet, "/products/user/:id", s.GetProductsByUserHandler)
-	r.Handle(http.MethodGet, "/product/:id", s.GetProductHandler)
-	r.HandlerFunc(http.MethodPost, "/product/create", s.CreateProductHandler)
-	r.Handle(http.MethodPut, "/product/:id/update", s.UpdateProductHandler)
-	r.Handle(http.MethodDelete, "/product/:id/delete", s.DeleteProductHandler)
+	r.HandlerFunc(http.MethodGet, routeVersion+"/products", s.GetProductsHandler)
+	r.Handle(http.MethodGet, routeVersion+"/products/category/:id", s.GetProductsByCategoryHandler)
+	r.Handle(http.MethodGet, routeVersion+"/products/user/:id", s.GetProductsByUserHandler)
+	r.Handle(http.MethodGet, routeVersion+"/product/:id", s.GetProductHandler)
+	r.HandlerFunc(http.MethodPost, routeVersion+"/product/create", s.CreateProductHandler)
+	r.Handle(http.MethodPut, routeVersion+"/product/:id/update", s.UpdateProductHandler)
+	r.Handle(http.MethodDelete, routeVersion+"/product/:id/delete", s.DeleteProductHandler)
+
+	//Image routes
+	r.Handle(http.MethodPost, routeVersion+"/images/upload/product/:id", s.UploadImageHandler)
 
 	r.HandlerFunc(http.MethodGet, "/", s.HelloWorldHandler)
 
