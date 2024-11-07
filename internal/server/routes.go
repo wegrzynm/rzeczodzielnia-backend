@@ -37,7 +37,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Handle(http.MethodDelete, routeVersion+"/product/:id/delete", s.DeleteProductHandler)
 
 	//Image routes
-	r.Handle(http.MethodPost, routeVersion+"/images/upload/product/:id", s.UploadImageHandler)
+	r.Handle(http.MethodPost, routeVersion+"/images/product/:id", s.UploadImageHandler)
+	r.Handle(http.MethodDelete, routeVersion+"/images/:id/delete", s.DeleteImageHandler)
 
 	r.HandlerFunc(http.MethodGet, "/", s.HelloWorldHandler)
 

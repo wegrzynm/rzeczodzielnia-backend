@@ -33,4 +33,4 @@ main
 .DS_Store
 
 # Images
-./images/*
+/images/*

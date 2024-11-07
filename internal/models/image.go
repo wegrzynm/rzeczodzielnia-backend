@@ -32,7 +32,7 @@ func GetAllImages() []Image {
 
 func GetImageById(Id uint) *Image {
 	var image Image
-	database.DbInstance.Db.Where("Id=?", Id).Find(&image)
+	database.DbInstance.Db.Where("Id=?", Id).First(&image)
 	return &image
 }
 
@@ -40,4 +40,8 @@ func GetImagesByProductId(Id uint) []Image {
 	var images []Image
 	database.DbInstance.Db.Where("product_id=?", Id).Find(&images)
 	return images
+}
+
+func DeleteImageById(image Image) {
+	database.DbInstance.Db.Delete(&image)
 }
