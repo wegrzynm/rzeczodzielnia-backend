@@ -47,6 +47,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.HandlerFunc(http.MethodPut, routeVersion+"/cart/clear", s.ClearCartHandler)
 	r.HandlerFunc(http.MethodPost, routeVersion+"/cart/promo-code", s.AddPromoCodeCartHandler)
 	r.HandlerFunc(http.MethodPut, routeVersion+"/cart/promo-code", s.RemovePromoCodeCartHandler)
+	r.HandlerFunc(http.MethodPost, routeVersion+"/cart/checkout", s.CheckoutCartHandler)
 
 	//User routes
 	r.HandlerFunc(http.MethodGet, routeVersion+"/user", s.GetUserHandler)

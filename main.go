@@ -1,5 +1,5 @@
 /*
-Copyright © 2024 NAME HERE matzyn.yt@gmail.com
+Copyright © 2024 Mateusz Węgrzyn matzyn.yt@gmail.com
 */
 package main
 

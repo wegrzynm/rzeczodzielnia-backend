@@ -184,3 +184,38 @@ func (s *Server) RemovePromoCodeCartHandler(w http.ResponseWriter, r *http.Reque
 	utils.AddOrUpdateObject(&cart, true)
 	sendJSONResponse(w, http.StatusOK, &cart)
 }
+
+func (s *Server) CheckoutCartHandler(w http.ResponseWriter, r *http.Request) {
+	isValid, statusCode, errMsg, usr := userAuthentication(r.Header.Get("Authorization"))
+	if !isValid {
+		handleError(w, statusCode, errMsg)
+		return
+	}
+	cart := models.GetCartByUserId(usr.Id)
+	if cart.ID == 0 {
+		handleError(w, http.StatusBadRequest, "Cart not found")
+		return
+	}
+	var orderAddress models.Address
+	if err := json.NewDecoder(r.Body).Decode(&orderAddress); err != nil {
+		handleError(w, http.StatusBadRequest, fmt.Sprintf("Error decoding request body: %v", err))
+		return
+	}
+	cart.IsCheckedOut = true
+	cart.UpdatedAt = time.Now()
+	utils.AddOrUpdateObject(&cart, true)
+	if orderAddress == (models.Address{}) {
+		orderAddress = cart.User.Address
+
+	}
+	order := models.Order{
+		UserID:         usr.Id,
+		Cart:           *cart,
+		PaymentStatus:  false,
+		DeliveryStatus: 0,
+		OrderAddress:   orderAddress,
+	}
+	utils.AddOrUpdateObject(&order, false)
+	//TODO: Payment request
+	sendJSONResponse(w, http.StatusOK, &order)
+}

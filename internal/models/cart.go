@@ -40,8 +40,8 @@ func GetCartById(Id uint) *Cart {
 
 func GetCartByUserId(Id uint) *Cart {
 	var cart Cart
-	database.DbInstance.Db.Preload("User").Preload("Items").
-		Where("user_id = ?", Id).First(&cart)
+	database.DbInstance.Db.Preload("User.Address").Preload("Items").
+		Where("user_id = ?", Id).Where("is_checked_out=?", false).First(&cart)
 	return &cart
 }
 
