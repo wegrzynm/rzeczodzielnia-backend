@@ -34,12 +34,12 @@ func GetAllUsers() []User {
 
 func GetUserById(Id uint) *User {
 	var user User
-	database.DbInstance.Db.Where("Id=?", Id).Find(&user)
+	database.DbInstance.Db.Preload("Address").Where("Id=?", Id).Find(&user)
 	return &user
 }
 
 func GetUserByEmail(email string) *User {
 	var user User
-	database.DbInstance.Db.Where("email=?", email).First(&user)
+	database.DbInstance.Db.Preload("Address").Where("email=?", email).First(&user)
 	return &user
 }

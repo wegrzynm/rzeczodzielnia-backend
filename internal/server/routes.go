@@ -48,6 +48,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.HandlerFunc(http.MethodPost, routeVersion+"/cart/promo-code", s.AddPromoCodeCartHandler)
 	r.HandlerFunc(http.MethodPut, routeVersion+"/cart/promo-code", s.RemovePromoCodeCartHandler)
 
+	//User routes
+	r.HandlerFunc(http.MethodGet, routeVersion+"/user", s.GetUserHandler)
+	r.HandlerFunc(http.MethodPut, routeVersion+"/user/set-address", s.SetUserAddressHandler)
+	r.HandlerFunc(http.MethodPut, routeVersion+"/user/change-password", s.ChangeUserPasswordHandler)
+	r.HandlerFunc(http.MethodPut, routeVersion+"/user/change-data", s.ChangeUserDataHandler)
+
 	r.HandlerFunc(http.MethodGet, "/", s.HelloWorldHandler)
 
 	r.HandlerFunc(http.MethodGet, "/health", s.healthHandler)
