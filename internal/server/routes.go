@@ -40,6 +40,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.Handle(http.MethodPost, routeVersion+"/images/product/:id", s.UploadImageHandler)
 	r.Handle(http.MethodDelete, routeVersion+"/images/:id/delete", s.DeleteImageHandler)
 
+	//Cart routes
+	r.HandlerFunc(http.MethodGet, routeVersion+"/cart", s.GetCartHandler)
+	r.HandlerFunc(http.MethodPost, routeVersion+"/cart/add", s.AddToCartHandler)
+	r.Handle(http.MethodPut, routeVersion+"/cart/remove/:id", s.RemoveFromCartHandler)
+	r.HandlerFunc(http.MethodPut, routeVersion+"/cart/clear", s.ClearCartHandler)
+	r.HandlerFunc(http.MethodPost, routeVersion+"/cart/promo-code", s.AddPromoCodeCartHandler)
+	r.HandlerFunc(http.MethodPut, routeVersion+"/cart/promo-code", s.RemovePromoCodeCartHandler)
+
 	r.HandlerFunc(http.MethodGet, "/", s.HelloWorldHandler)
 
 	r.HandlerFunc(http.MethodGet, "/health", s.healthHandler)

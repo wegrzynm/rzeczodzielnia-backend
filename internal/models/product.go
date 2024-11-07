@@ -59,6 +59,13 @@ func GetProductById(Id uint) *Product {
 	return &product
 }
 
+func GetActiveProductById(Id uint, isActive bool) *Product {
+	var product Product
+	database.DbInstance.Db.Preload("Category").Preload("Images").
+		Where("Id=?", Id).Where("is_active=?", isActive).First(&product)
+	return &product
+}
+
 func DeleteProductById(product Product) {
 	database.DbInstance.Db.Delete(&product)
 }
