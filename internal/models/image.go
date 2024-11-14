@@ -36,6 +36,12 @@ func GetImageById(Id uint) *Image {
 	return &image
 }
 
+func GetImageByName(name string) *Image {
+	var image Image
+	database.DbInstance.Db.Where("name=?", name).First(&image)
+	return &image
+}
+
 func GetImagesByProductId(Id uint) []Image {
 	var images []Image
 	database.DbInstance.Db.Where("product_id=?", Id).Find(&images)

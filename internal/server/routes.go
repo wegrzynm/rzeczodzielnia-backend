@@ -55,6 +55,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	r.HandlerFunc(http.MethodPut, routeVersion+"/user/change-password", s.ChangeUserPasswordHandler)
 	r.HandlerFunc(http.MethodPut, routeVersion+"/user/change-data", s.ChangeUserDataHandler)
 
+	//Image routes
+	r.Handle(http.MethodGet, routeVersion+"/images/:id", s.GetImageHandler)
+
 	r.HandlerFunc(http.MethodGet, "/", s.HelloWorldHandler)
 
 	r.HandlerFunc(http.MethodGet, "/health", s.healthHandler)
@@ -142,4 +145,9 @@ func getParamsId(params httprouter.Params) uint {
 		return 0
 	}
 	return uint(id)
+}
+
+func getParamsName(params httprouter.Params) string {
+	idString := params.ByName("id")
+	return idString
 }

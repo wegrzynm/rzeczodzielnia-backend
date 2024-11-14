@@ -26,6 +26,30 @@ var allowedExtensions = map[string]bool{
 	".webp": true,
 }
 
+func (s *Server) GetImageHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	imageName := getParamsName(params)
+	image := models.GetImageByName(imageName)
+
+	if image.ID == 0 {
+		handleError(w, http.StatusNotFound, "Image doesn't exist")
+		return
+	}
+
+	file, err := os.Open(image.Path)
+	if err != nil {
+		handleError(w, http.StatusInternalServerError, "Error while opening file: "+err.Error())
+		return
+	}
+	defer file.Close()
+
+	w.Header().Set("Content-Type", "image/jpeg")
+	_, err = io.Copy(w, file)
+	if err != nil {
+		handleError(w, http.StatusInternalServerError, "Error while reading file: "+err.Error())
+		return
+	}
+}
+
 func (s *Server) UploadImageHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	isValid, statusCode, errMsg, usr := userAuthentication(r.Header.Get("Authorization"))
 	if !isValid {
